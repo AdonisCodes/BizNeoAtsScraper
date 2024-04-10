@@ -1,13 +1,41 @@
 {
-  "previousMember": "",
-  "nextMember": "",
-  "authentication": {
-    "username": null,
-    "password": null,
-    "token": "",
-    "headers": null
-  },
-  "timeRange": [4, 7],
-  "minTimeUntilSleep": 1800,
-  "sleepDurationRange": [400, 800]
+    "previousUser": null,
+    "previousPage": 7,
+    "companySlug": "qualis-consultores",
+    "companyID": 170225,
+    "authentication": {
+        "cookies": {
+            "ats_authentication_email": "tonijorda1997%40gmail.com",
+            "ats_authentication_token": "1iBMwH1dBB6LZgxSBYw7sQ-MEXfhJ-YV1GLEu1NFGvA%3D",
+            "_session_id": "ed0688c39627c04531c84f7b5a1ef526"
+        },
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "en-GB,en;q=0.5",
+            "content-type": "application/json;charset=UTF-8",
+            "origin": "https://ats.bizneo.com",
+            "referer": "https://ats.bizneo.com/trabajar/qualis-consultores/candidates",
+            "sec-ch-ua": "\"Brave\";v=\"123\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"123\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Linux\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "sec-gpc": "1",
+            "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
+            "x-csrf-token": "MXpx1ngojD0q297uIb5CYY8Rd2_bUATje6zFELpZ0FsRHBlOy6Jl1o2w2IjkJiW4-P-IiOnr-AO0R3DbR8c9Eg"
+        }
+    },
+    "timeRange": [
+        4,
+        7
+    ],
+    "minTimeUntilSleep": [
+        10,
+        20
+    ],
+    "sleepDurationRange": [
+        10,
+        20
+    ]
 }
