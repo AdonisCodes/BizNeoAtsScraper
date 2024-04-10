@@ -189,8 +189,9 @@ def getAllIds():
 
 def getMemberInfo(id: str) -> dict:
     cookies, headers = authenticate()
+    print(BCOLORS.OKGREEN + "Getting Info for: ", id)
     if not cookies or not headers:
-        print(BCOLORS.FAIL + "Authentication Failed!" + BCOLORS.ENDC)
+        print(BCOLORS.FAIL + "  Authentication Failed!" + BCOLORS.ENDC)
         return None
 
     url = f"{BASE_URL_BASIC}/candidates/{id}"
@@ -216,23 +217,15 @@ def getMemberInfo(id: str) -> dict:
             file_id = file["id"]
             candidate_id = id
             file_name = file["file"]["name"]
-            if (
-                "text" not in file["file"]["type"]
-                and ".txt" not in file["file"]["name"]
-            ):
-                file_name.replace(".txt", ".pdf")
+            file_name.replace(".txt", ".pdf")
 
             url = file["file"]["url"].replace("\u0026", "&")
             response = requests.get(url, headers=headers, cookies=cookies)
+            del response_json["options"]
+            del response_json["permissions"]
             with open(f"users/{candidate_id}_{file_id}_{file_name}", "wb") as f:
-                f.write(response.content)
+                json.dump(response_json, f)
 
-            with open("state.json", "w") as f:
-                state["previousUser"] = id
-                json.dump(state, f)
-
-        del response_json["options"]
-        del response_json["permissions"]
         return response_json
 
     else:
@@ -257,21 +250,15 @@ def main():
         state["minTimeUntilSleep"][0], state["minTimeUntilSleep"][1]
     )
     all_ids = [id.strip() for id in all_ids]
-    all_ids = [id.strip() for id in all_ids if len(id) > 0]
+    all_ids = [id for id in all_ids if len(id) > 0]
     all_ids = list(set(all_ids))
-    all_ids.sort()
-
-    if state["previousUser"] is None:
-        all_ids = all_ids
-    else:
+    if state["previousUser"] is not None and state["previousUser"] in all_ids:
         all_ids = all_ids[all_ids.index(state["previousUser"]) + 1 :]
+    else:
+        all_ids = all_ids[0:]
 
-    for index, id in enumerate(all_ids):
-        print(
-            BCOLORS.OKGREEN
-            + f"{index}/{len(all_ids)} Getting Info for {id}"
-            + BCOLORS.ENDC
-        )
+    for id in all_ids:
+
         if time_until_sleep <= 0:
             sleep_total = randint(
                 state["sleepDurationRange"][0], state["sleepDurationRange"][1]
@@ -281,12 +268,12 @@ def main():
             )
             print(
                 BCOLORS.OKBLUE
-                + f"    Taking a break for {sleep_total} seconds"
+                + f"Taking a break for {sleep_total} seconds"
                 + BCOLORS.ENDC
             )
             print(
                 BCOLORS.OKBLUE
-                + f"    Next Break in {time_until_sleep} seconds"
+                + f"Next Break in {time_until_sleep} seconds"
                 + BCOLORS.ENDC
             )
             time.sleep(sleep_total)
@@ -296,18 +283,16 @@ def main():
         random_sleep_wait = randint(state["timeRange"][0], state["timeRange"][1])
         print(
             BCOLORS.OKBLUE
-            + f"    Sleeping for {random_sleep_wait} seconds to avoid detection!"
+            + f"Sleeping for {random_sleep_wait} seconds to avoid detection!"
             + BCOLORS.ENDC
         )
         time.sleep(random_sleep_wait)
         request_took = time.time() - start
         time_until_sleep -= request_took
-        print(
-            BCOLORS.OKBLUE + f"    Request took {request_took} seconds" + BCOLORS.ENDC
-        )
+        print(BCOLORS.OKBLUE + f"Request took {request_took} seconds" + BCOLORS.ENDC)
         print(
             BCOLORS.OKBLUE
-            + f"    Time until next break: {time_until_sleep or 0}"
+            + f"Time until next break: {time_until_sleep or 0}"
             + BCOLORS.ENDC
         )
 
