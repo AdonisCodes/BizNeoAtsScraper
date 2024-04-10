@@ -189,7 +189,6 @@ def getAllIds():
 
 def getMemberInfo(id: str) -> dict:
     cookies, headers = authenticate()
-    print(BCOLORS.OKGREEN + "Getting Info for: ", id)
     if not cookies or not headers:
         print(BCOLORS.FAIL + "  Authentication Failed!" + BCOLORS.ENDC)
         return None
@@ -206,6 +205,8 @@ def getMemberInfo(id: str) -> dict:
             state["previousUser"] = id
             json.dump(state, f)
 
+        del response_json["permissions"]
+        del response_json["options"]
         with open(f"users/{id}.json", "w") as f:
             json.dump(response_json, f)
 
@@ -217,14 +218,12 @@ def getMemberInfo(id: str) -> dict:
             file_id = file["id"]
             candidate_id = id
             file_name = file["file"]["name"]
-            file_name.replace(".txt", ".pdf")
+            file_name = file_name.replace(".txt", ".pdf")
 
             url = file["file"]["url"].replace("\u0026", "&")
             response = requests.get(url, headers=headers, cookies=cookies)
-            del response_json["options"]
-            del response_json["permissions"]
             with open(f"users/{candidate_id}_{file_id}_{file_name}", "wb") as f:
-                json.dump(response_json, f)
+                f.write(response.content)
 
         return response_json
 
@@ -252,13 +251,18 @@ def main():
     all_ids = [id.strip() for id in all_ids]
     all_ids = [id for id in all_ids if len(id) > 0]
     all_ids = list(set(all_ids))
+    all_ids.sort()
     if state["previousUser"] is not None and state["previousUser"] in all_ids:
         all_ids = all_ids[all_ids.index(state["previousUser"]) + 1 :]
     else:
-        all_ids = all_ids[0:]
+        all_ids = all_ids
 
-    for id in all_ids:
-
+    for index, id in enumerate(all_ids):
+        print(
+            BCOLORS.OKGREEN
+            + f"{index}/{len(all_ids)} Getting Info for: {id}"
+            + BCOLORS.ENDC
+        )
         if time_until_sleep <= 0:
             sleep_total = randint(
                 state["sleepDurationRange"][0], state["sleepDurationRange"][1]
