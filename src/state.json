@@ -1,0 +1,13 @@
+{
+  "previousMember": "",
+  "nextMember": "",
+  "authentication": {
+    "username": null,
+    "password": null,
+    "token": "",
+    "headers": null
+  },
+  "timeRange": [4, 7],
+  "minTimeUntilSleep": 1800,
+  "sleepDurationRange": [400, 800]
+}
