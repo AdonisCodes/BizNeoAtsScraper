@@ -4,6 +4,7 @@ import json
 from typing import Tuple
 from random import randint
 import time
+import os
 
 
 state = {}
@@ -14,7 +15,7 @@ BASE_URL_BASIC = f"https://ats.bizneo.com/trabajar/{state['companySlug']}"
 BASE_URL_ID = f"https://ats.bizneo.com/trabajar/{state['companyID']}"
 
 
-def authenticate() -> Tuple[str, str]:
+def authenticate() -> Tuple[dict | None, dict | None]:
     if state["authentication"]["cookies"]:
         return (
             state["authentication"]["cookies"],
@@ -187,7 +188,7 @@ def getAllIds():
         )
 
 
-def getMemberInfo(id: str) -> dict:
+def getMemberInfo(id: str) -> dict | None:
     cookies, headers = authenticate()
     if not cookies or not headers:
         print(BCOLORS.FAIL + "  Authentication Failed!" + BCOLORS.ENDC)
@@ -204,7 +205,6 @@ def getMemberInfo(id: str) -> dict:
         with open("state.json", "w") as f:
             state["previousUser"] = id
             json.dump(state, f)
-
         del response_json["permissions"]
         del response_json["options"]
         with open(f"users/{id}.json", "w") as f:
@@ -287,16 +287,18 @@ def main():
         random_sleep_wait = randint(state["timeRange"][0], state["timeRange"][1])
         print(
             BCOLORS.OKBLUE
-            + f"Sleeping for {random_sleep_wait} seconds to avoid detection!"
+            + f"    Sleeping for {random_sleep_wait} seconds to avoid detection!"
             + BCOLORS.ENDC
         )
         time.sleep(random_sleep_wait)
         request_took = time.time() - start
         time_until_sleep -= request_took
-        print(BCOLORS.OKBLUE + f"Request took {request_took} seconds" + BCOLORS.ENDC)
+        print(
+            BCOLORS.OKBLUE + f"    Request took {request_took} seconds" + BCOLORS.ENDC
+        )
         print(
             BCOLORS.OKBLUE
-            + f"Time until next break: {time_until_sleep or 0}"
+            + f"    Time until next break: {time_until_sleep or 0}"
             + BCOLORS.ENDC
         )
 

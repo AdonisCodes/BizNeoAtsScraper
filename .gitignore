@@ -129,6 +129,9 @@ ENV/
 env.bak/
 venv.bak/
 src/users
+src/users.zip
+src/users2
+src/users2.zip
 
 # Spyder project settings
 .spyderproject
